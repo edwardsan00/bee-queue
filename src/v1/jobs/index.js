@@ -60,11 +60,8 @@ router.get('/clear', async (req, res) => {
 router.post('/', async (req, res) => {
 	try{
 		const { id } = req.body
-		const data = await createQueue({ id })
-    console.log("TCL: data", data)
-		if(Boolean(data))
-			return res.json({ data, success: true})
-		throw new Error(`I can't create the record`)
+		await createQueue({ id })
+		return res.json({ success: true})
 	} catch (error) {
 		return res.json({ error: error.message, success: false })
 	}
@@ -73,8 +70,7 @@ router.post('/', async (req, res) => {
 router.delete('/:id', async (req, res) => {
 	try {
 		const { id } = req.params
-		const result = await Queue.removeQueue(id)
-    console.log("TCL: result", result)
+		await Queue.removeQueue(id)
 		return res.json({ success: true })
 	} catch(error) {
 		res.json({ error: error.message, success: false })

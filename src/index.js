@@ -6,5 +6,5 @@ import app from './app'
 
 app.listen(3000, function () {
 	console.log("Node server running on http://localhost:3000")
-	Queue.processQueue(() => console.log('Se ejecto process del job'))
+	Queue.processQueue(() => console.log('Listener Queue'))
 });

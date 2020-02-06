@@ -22,10 +22,7 @@ export const createQueue = async ({ id, source = 'activitieKrowders'  }) => {
 		const dataQueue = await Queue.createQueue(saveRedis)
 			.setId(id.toString())
 			.delayUntil(delayDate)
-			.save((err, redisJob) => {
-				const { status, data } = redisJob
-				return { status, data }
-			})
+			.save()
 
 		dataQueue.on('succeeded', (id) => {
     	console.log("TCL: postJob -> _id", id)		

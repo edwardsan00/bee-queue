@@ -19,15 +19,7 @@ class Queue {
 	}
 
 	removeQueue(id) {
-		return this.queue.removeJob(id, (err) => {
-			if(!err){
-				console.log('no hay errpr')
-			} else {
-				console.log('hay erro')
-			}
-			// 	return { success: true }
-			// throw new Error(`Couldn't remove queue id: ${id}`)
-		})
+		return this.queue.removeJob(id)
 	}
 
 	processQueue(cb) {
