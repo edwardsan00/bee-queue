@@ -5,7 +5,7 @@ import v1 from './v1'
 const app = express()
 const router = express.Router()
 
-morgan('tiny')
+app.use(morgan('combined'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 

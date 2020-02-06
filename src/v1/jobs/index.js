@@ -14,6 +14,22 @@ router.get('/', async (req, res) => {
 	}
 })
 
+router.get('/health', async (req, res) => {
+	Queue.getHeath()
+	return res.json({ success: true })
+})
+
+router.get('/tail/:id', async (req, res) => {
+	const { id } = req.params
+	await Queue.getTail(id)
+	return res.json({ success: true })
+})
+
+router.get('/tail', async (req, res) => {
+	await Queue.getTails()
+	return res.json({ success: true })
+})
+
 router.post('/', async (req, res) => {
 	try{
 		const { name, salary } = req.body
@@ -24,9 +40,16 @@ router.post('/', async (req, res) => {
 	}
 })
 
-router.get('/tail', async (req, res) => {
-	Queue.getTail()
-	return res.json({ success: true })
+router.delete('/:id', async (req, res) => {
+	try {
+		const { id } = req.params
+		const result = await Queue.removeQueue(id)
+		return res.json({ success: true })
+	} catch(error) {
+		res.json({ error: error.message, success: false })
+	}
 })
+
+
 
 export default router

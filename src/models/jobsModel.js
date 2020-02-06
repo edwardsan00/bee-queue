@@ -7,6 +7,10 @@ const JobsSchema = new mongoose.Schema({
 	available: { 
 		type: Boolean,
 		default: true
+	},
+	beeQueueId: {
+		type: String,
+		default: null
 	}
 }, { timestamps: true })
 

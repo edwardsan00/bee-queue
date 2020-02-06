@@ -9,32 +9,33 @@ export const getJobs = async () => {
 export const postJob = async ({ name, salary }) => {
 	try {
 		const job = await Jobs.create({ name, salary })
-		const tailJob = await Queue.createTail(job).save((err, job) => {
-			if (err)
-				console.log('Fallo el redis')
-			else {
-				console.log('Se guardo el job')
-				return job
-			}
-		})
-
+		const { _id } = job
 		const todayy = new Date()
 		const ISOT = todayy.toISOString()
 		const late = new Date(todayy)
 		late.setMinutes(late.getMinutes() + 1)
 		const ISOLate = late.toISOString()
 
-		tailJob.delayUntil(ISOLate)
+		const tailJob = await Queue.createQueue(job).setId(_id.toString()).delayUntil(Date.parse(ISOLate)).save(async (err, redisJob) => {
+			if (err)
+				console.log('Fallo el Bee-queue creando el job', job)
+			else {
+				const { id, data } = redisJob
+        console.log("TCL: postJob -> data", data)
+        console.log("TCL: postJob -> id", id)
+				await Jobs.findByIdAndUpdate(_id, { beeQueueId: id })
+				return job
+			}
+		})
+
 
 		tailJob.on('succeeded', (_id) => {
+    console.log("TCL: postJob -> _id", _id)
 			return ( async () => {
 				const data = await Jobs.findById(_id, { __v: 0, createdAt: 0, updatedAt: 0 }).lean()
 				await postBackup({ ...data, type: 'job' })
 			})()			
     })
-
-
-
 
 	}	catch(err) {
 		throw err
